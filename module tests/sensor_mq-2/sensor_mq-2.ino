@@ -1,4 +1,4 @@
-#define MQ2_SENSOR_PIN                  34
+#define MQ2_SENSOR_PIN                  26
 #define ADC_RESOLUTION                  4095
 #define INTERVAL_MS_BETWEEN_READINGS    10
 #define NUMBER_OF_READINGS              100
