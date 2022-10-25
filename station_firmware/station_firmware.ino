@@ -15,10 +15,10 @@
 
 // ---------- Diretivas ----------
 // Debug
-#define DEBUG_SENSOR_MQ2
+// #define DEBUG_SENSOR_MQ2
 #define DEBUG_WIFI
 #define DEBUG_MQTT
-#define DEBUG_LCD
+// #define DEBUG_LCD
 
 // Sirene
 #define LED_PIN              2
@@ -136,11 +136,16 @@ void loop() {
     char mq2ValuePercentString[10];
     dtostrf(mq2ValuePercent, 5, 2, mq2ValuePercentString);
     
-    client.publish(TOPIC_GAS_SENSOR_VALUE, mq2ValuePercentString);
+    bool pubState = client.publish(TOPIC_GAS_SENSOR_VALUE, mq2ValuePercentString);
     
     #ifdef DEBUG_MQTT
-      Serial.print("[MQTT] Publicado valor do Sensor de gás: ");
-      Serial.println(mq2ValuePercentString);
+      if(pubState) {
+        Serial.print("[MQTT] Publicado valor do Sensor de gás: ");
+        Serial.println(mq2ValuePercentString);
+      } else {
+        Serial.print("[MQTT] Falha ao publicar valor do Sensor de gás: ");
+        Serial.println(mq2ValuePercentString);
+      }
     #endif
 
     lcd.setCursor(0, 1);
@@ -158,10 +163,14 @@ void loop() {
       if (millis() - previousTime2 >= GAS_CRITICAL_ALERT_INTERVAL) {
         previousTime2 = millis();
         
-        client.publish(TOPIC_GAS_SENSOR_ALERT, "Perigo de incêndio!");
+        bool pubState = client.publish(TOPIC_GAS_SENSOR_ALERT, "Perigo de incêndio!");
 
         #ifdef DEBUG_MQTT
-          Serial.println("Publicada mensagem de socorro");
+          if(pubState) {
+            Serial.println("[MQTT] Publicada mensagem de socorro!");
+          } else {
+            Serial.println("[MQTT] Falha ao publicar a mensagem de socorro");
+          }
         #endif
       }
 
@@ -170,6 +179,7 @@ void loop() {
 
       if (!alreadyResetAlert) {
         alreadyResetAlert = true;
+        previousTime2 = 0;      // Para que uma publicacao em TOPIC_GAS_SENSOR_ALERT possa ser feita imediatamente
       
         digitalWrite(BUZZER_PIN, LOW);
         digitalWrite(LED_PIN, LOW);
@@ -177,10 +187,14 @@ void loop() {
         lcd.setCursor(0, 0);    // col, row
         lcd.print("Ambiente seguro!");
 
-        client.publish(TOPIC_GAS_SENSOR_ALERT, "Situação sob controle");
+        bool pubState = client.publish(TOPIC_GAS_SENSOR_ALERT, "Situação sob controle");
 
         #ifdef DEBUG_MQTT
-          Serial.println("Publicada mensagem: Situação sob controle");
+          if (pubState) {
+            Serial.println("[MQTT] Publicada mensagem: Situação sob controle");
+          } else {
+            Serial.println("[MQTT] Falha ao publicar a mensagem: Situação sob controle");
+          }
         #endif
       }
 
