@@ -1,4 +1,4 @@
-# Sistema de alerta de riscos para espaços confinados
+# Sistema de monitoramento de GLP para espaços confinados
 ## Projeto de Microprocessadores - UPE/Poli
 
 ## **Orientações para compilação**:
