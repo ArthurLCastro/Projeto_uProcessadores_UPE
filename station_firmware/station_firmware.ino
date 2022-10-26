@@ -47,7 +47,7 @@
 
 #define CRITICAL_GAS_VALUE              10
 #define GAS_PUBLISH_INTERVAL            5000
-#define GAS_CRITICAL_ALERT_INTERVAL     30000
+#define GAS_CRITICAL_ALERT_INTERVAL     10000
 
 
 // ---------- Declaracao de variaveis ----------
